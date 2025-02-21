@@ -17,6 +17,7 @@ This repository provides example code snippets and usage instructions for intera
     - [OpenAI Models](#openai-models-1)
     - [Claude Models](#claude-models-1)
     - [Gemini Models](#gemini-models-1)
+      - [Structured Output](#structured-output)
     - [Llama Models](#llama-models-1)
   - [Combined Query Function](#combined-query-function)
   - [Error Handling](#error-handling)
@@ -152,6 +153,39 @@ def query_gemini_model(message, model_name="gemini-1.5-flash", temperature=0.5, 
     return response.json()
 
 result = query_gemini_model(message="hello", model_name="gemini-1.5-flash", temperature=0.5, maxOutputTokens=10)
+print(json.dumps(result, indent=4))
+```
+
+#### Structured Output
+
+The Gemini model also supports structured outputs. You can specify a `response_schema` parameter to define the structure of the output.
+
+```python
+def query_gemini_model_with_schema(message, model_name="gemini-1.5-flash", temperature=0.5, maxOutputTokens=10, response_schema=None):
+    url = f"{basicUrl}/deployments/{model_name}/generate_content?api-version=002"
+    headers = {'Content-Type': 'application/json', 'accept': 'application/json', 'api-key': apiKey}
+    payload = {
+        'contents': [{"role": "user", "parts": [{"text": message}]}],
+        'generationConfig': {
+            'maxOutputTokens': maxOutputTokens,
+            'temperature': temperature
+        }
+    }
+    if response_schema:
+        payload['response_schema'] = response_schema
+    response = requests.post(url, json=payload, headers=headers)
+    return response.json()
+
+schema = {
+    "type": "object",
+    "properties": {
+        "summary": {"type": "string"},
+        "keywords": {"type": "array", "items": {"type": "string"}}
+    },
+    "required": ["summary", "keywords"]
+}
+
+result = query_gemini_model_with_schema(message="hello", model_name="gemini-1.5-flash", temperature=0.5, maxOutputTokens=10, response_schema=schema)
 print(json.dumps(result, indent=4))
 ```
 
