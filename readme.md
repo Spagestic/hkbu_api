@@ -104,9 +104,9 @@ apiKey = os.getenv("HKBU_API_KEY")
 basicUrl = os.getenv("HKBU_BASIC_URL")
 
 def query_openai_model(
-    message, 
-    model_name="gpt-4-o-mini", 
-    temperature=0.5, 
+    message,
+    model_name="gpt-4-o-mini",
+    temperature=0.5,
     max_tokens=10
     ):
     url = f"{basicUrl}/deployments/{model_name}/chat/completions/?api-version=2024-10-21"
@@ -120,9 +120,9 @@ def query_openai_model(
     return response.json()
 
 result = query_openai_model(
-    message="hello", 
-    model_name="gpt-4-o-mini", 
-    temperature=0.5, 
+    message="hello",
+    model_name="gpt-4-o-mini",
+    temperature=0.5,
     max_tokens=10
     )
 print(json.dumps(result, indent=4))
@@ -132,9 +132,9 @@ print(json.dumps(result, indent=4))
 
 ```python
 def query_claude_model(
-    message, 
-    model_name="claude-3-haiku", 
-    temperature=0.5, 
+    message,
+    model_name="claude-3-haiku",
+    temperature=0.5,
     max_tokens=10
     ):
     url = f"{basicUrl}/deployments/{model_name}/messages/?api-version=20240307"
@@ -148,9 +148,9 @@ def query_claude_model(
     return response.json()
 
 result = query_claude_model(
-    message="hello", 
-    model_name="claude-3-haiku", 
-    temperature=0.5, 
+    message="hello",
+    model_name="claude-3-haiku",
+    temperature=0.5,
     max_tokens=10
     )
 print(json.dumps(result, indent=4))
@@ -160,9 +160,9 @@ print(json.dumps(result, indent=4))
 
 ```python
 def query_gemini_model(
-    message, 
-    model_name="gemini-1.5-flash", 
-    temperature=0.5, 
+    message,
+    model_name="gemini-1.5-flash",
+    temperature=0.5,
     maxOutputTokens=10
     ):
     url = f"{basicUrl}/deployments/{model_name}/generate_content?api-version=002"
@@ -178,9 +178,9 @@ def query_gemini_model(
     return response.json()
 
 result = query_gemini_model(
-    message="hello", 
-    model_name="gemini-1.5-flash", 
-    temperature=0.5, 
+    message="hello",
+    model_name="gemini-1.5-flash",
+    temperature=0.5,
     maxOutputTokens=10
     )
 print(json.dumps(result, indent=4))
@@ -192,10 +192,10 @@ The Gemini model also supports structured outputs. You can specify a `response_s
 
 ```python
 def query_gemini_model_with_schema(
-    message, 
-    model_name="gemini-1.5-flash", 
-    temperature=0.5, 
-    maxOutputTokens=10, 
+    message,
+    model_name="gemini-1.5-flash",
+    temperature=0.5,
+    maxOutputTokens=10,
     response_schema=None
     ):
     url = f"{basicUrl}/deployments/{model_name}/generate_content?api-version=002"
@@ -213,31 +213,70 @@ def query_gemini_model_with_schema(
     return response.json()
 
 schema = {
-    "type": "object",
-    "properties": {
-        "summary": {"type": "string"},
-        "keywords": {"type": "array", "items": {"type": "string"}}
+    "type": "ARRAY",
+    "items": {
+        "type": "OBJECT",
+        "properties": {
+            "recipe_name": {"type": "STRING"},
+            "ingredients": {"type": "ARRAY", "items": {"type": "STRING"}},
+        },
+        "required": ["recipe_name", "ingredients"],
     },
-    "required": ["summary", "keywords"]
 }
 
 result = query_gemini_model_with_schema(
-    message="hello", 
-    model_name="gemini-1.5-flash", 
-    temperature=0.5, 
-    maxOutputTokens=10, 
+    message="List a few popular cookie recipes",
+    model_name="gemini-1.5-flash",
+    temperature=0.5,
+    maxOutputTokens=500,
     response_schema=schema
     )
-print(json.dumps(result, indent=4))
+result = result["candidates"][0]["content"]["parts"][0]["text"]
+json.loads(result)
+```
+
+```bash
+[{'ingredients': ['1 cup (2 sticks) unsalted butter, softened',
+   '1 1/2 cups granulated sugar',
+   '1 cup packed brown sugar',
+   '2 large eggs',
+   '2 teaspoons vanilla extract',
+   '3 cups all-purpose flour',
+   '1 teaspoon baking soda',
+   '1 teaspoon salt',
+   '1 cup chocolate chips',
+   '1 cup chopped nuts (optional)'],
+  'recipe_name': 'Chocolate Chip Cookies'},
+ {'ingredients': ['1 cup (2 sticks) unsalted butter, softened',
+   '1 cup granulated sugar',
+   '1/2 cup packed brown sugar',
+   '2 large eggs',
+   '1 teaspoon vanilla extract',
+   '2 1/4 cups all-purpose flour',
+   '1 teaspoon baking soda',
+   '1/2 teaspoon salt',
+   '1/2 cup unsweetened cocoa powder'],
+  'recipe_name': 'Chocolate Cookies'},
+ {'ingredients': ['1/2 cup (1 stick) unsalted butter, softened',
+   '1/2 cup granulated sugar',
+   '1/2 cup packed brown sugar',
+   '1 large egg',
+   '1 teaspoon vanilla extract',
+   '1 1/4 cups all-purpose flour',
+   '1/2 teaspoon baking soda',
+   '1/4 teaspoon salt',
+   '1/2 cup peanut butter',
+   '1/2 cup chocolate chips'],
+  'recipe_name': 'Peanut Butter Cookies'}]
 ```
 
 ### Llama Models
 
 ```python
 def query_llama_model(
-    message, 
-    model_name="llama3_1", 
-    temperature=0.5, 
+    message,
+    model_name="llama3_1",
+    temperature=0.5,
     max_tokens=10
     ):
     url = f"{basicUrl}/deployments/{model_name}/llama/completion/?api-version=20240723"
@@ -251,9 +290,9 @@ def query_llama_model(
     return response.json()
 
 result = query_llama_model(
-    message="hello", 
-    model_name="llama3_1", 
-    temperature=0.5, 
+    message="hello",
+    model_name="llama3_1",
+    temperature=0.5,
     max_tokens=10
     )
 print(json.dumps(result, indent=4))
