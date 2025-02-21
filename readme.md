@@ -103,7 +103,12 @@ load_dotenv()
 apiKey = os.getenv("HKBU_API_KEY")
 basicUrl = os.getenv("HKBU_BASIC_URL")
 
-def query_openai_model(message, model_name="gpt-4-o-mini", temperature=0.5, max_tokens=10):
+def query_openai_model(
+    message, 
+    model_name="gpt-4-o-mini", 
+    temperature=0.5, 
+    max_tokens=10
+    ):
     url = f"{basicUrl}/deployments/{model_name}/chat/completions/?api-version=2024-10-21"
     headers = {'Content-Type': 'application/json', 'api-key': apiKey}
     payload = {
@@ -114,14 +119,24 @@ def query_openai_model(message, model_name="gpt-4-o-mini", temperature=0.5, max_
     response = requests.post(url, json=payload, headers=headers)
     return response.json()
 
-result = query_openai_model(message="hello", model_name="gpt-4-o-mini", temperature=0.5, max_tokens=10)
+result = query_openai_model(
+    message="hello", 
+    model_name="gpt-4-o-mini", 
+    temperature=0.5, 
+    max_tokens=10
+    )
 print(json.dumps(result, indent=4))
 ```
 
 ### Claude Models
 
 ```python
-def query_claude_model(message, model_name="claude-3-haiku", temperature=0.5, max_tokens=10):
+def query_claude_model(
+    message, 
+    model_name="claude-3-haiku", 
+    temperature=0.5, 
+    max_tokens=10
+    ):
     url = f"{basicUrl}/deployments/{model_name}/messages/?api-version=20240307"
     headers = {'Content-Type': 'application/json', 'api-key': apiKey}
     payload = {
@@ -132,14 +147,24 @@ def query_claude_model(message, model_name="claude-3-haiku", temperature=0.5, ma
     response = requests.post(url, json=payload, headers=headers)
     return response.json()
 
-result = query_claude_model(message="hello", model_name="claude-3-haiku", temperature=0.5, max_tokens=10)
+result = query_claude_model(
+    message="hello", 
+    model_name="claude-3-haiku", 
+    temperature=0.5, 
+    max_tokens=10
+    )
 print(json.dumps(result, indent=4))
 ```
 
 ### Gemini Models
 
 ```python
-def query_gemini_model(message, model_name="gemini-1.5-flash", temperature=0.5, maxOutputTokens=10):
+def query_gemini_model(
+    message, 
+    model_name="gemini-1.5-flash", 
+    temperature=0.5, 
+    maxOutputTokens=10
+    ):
     url = f"{basicUrl}/deployments/{model_name}/generate_content?api-version=002"
     headers = {'Content-Type': 'application/json', 'accept': 'application/json', 'api-key': apiKey}
     payload = {
@@ -152,7 +177,12 @@ def query_gemini_model(message, model_name="gemini-1.5-flash", temperature=0.5, 
     response = requests.post(url, json=payload, headers=headers)
     return response.json()
 
-result = query_gemini_model(message="hello", model_name="gemini-1.5-flash", temperature=0.5, maxOutputTokens=10)
+result = query_gemini_model(
+    message="hello", 
+    model_name="gemini-1.5-flash", 
+    temperature=0.5, 
+    maxOutputTokens=10
+    )
 print(json.dumps(result, indent=4))
 ```
 
@@ -161,7 +191,13 @@ print(json.dumps(result, indent=4))
 The Gemini model also supports structured outputs. You can specify a `response_schema` parameter to define the structure of the output.
 
 ```python
-def query_gemini_model_with_schema(message, model_name="gemini-1.5-flash", temperature=0.5, maxOutputTokens=10, response_schema=None):
+def query_gemini_model_with_schema(
+    message, 
+    model_name="gemini-1.5-flash", 
+    temperature=0.5, 
+    maxOutputTokens=10, 
+    response_schema=None
+    ):
     url = f"{basicUrl}/deployments/{model_name}/generate_content?api-version=002"
     headers = {'Content-Type': 'application/json', 'accept': 'application/json', 'api-key': apiKey}
     payload = {
@@ -185,14 +221,25 @@ schema = {
     "required": ["summary", "keywords"]
 }
 
-result = query_gemini_model_with_schema(message="hello", model_name="gemini-1.5-flash", temperature=0.5, maxOutputTokens=10, response_schema=schema)
+result = query_gemini_model_with_schema(
+    message="hello", 
+    model_name="gemini-1.5-flash", 
+    temperature=0.5, 
+    maxOutputTokens=10, 
+    response_schema=schema
+    )
 print(json.dumps(result, indent=4))
 ```
 
 ### Llama Models
 
 ```python
-def query_llama_model(message, model_name="llama3_1", temperature=0.5, max_tokens=10):
+def query_llama_model(
+    message, 
+    model_name="llama3_1", 
+    temperature=0.5, 
+    max_tokens=10
+    ):
     url = f"{basicUrl}/deployments/{model_name}/llama/completion/?api-version=20240723"
     headers = {'Content-Type': 'application/json', 'api-key': apiKey}
     payload = {
@@ -203,7 +250,12 @@ def query_llama_model(message, model_name="llama3_1", temperature=0.5, max_token
     response = requests.post(url, json=payload, headers=headers)
     return response.json()
 
-result = query_llama_model(message="hello", model_name="llama3_1", temperature=0.5, max_tokens=10)
+result = query_llama_model(
+    message="hello", 
+    model_name="llama3_1", 
+    temperature=0.5, 
+    max_tokens=10
+    )
 print(json.dumps(result, indent=4))
 ```
 
