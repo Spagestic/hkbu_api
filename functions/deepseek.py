@@ -18,12 +18,11 @@ validate_env_vars()
 # Constants
 API_KEY: str = os.getenv("HKBU_API_KEY")  # type: ignore
 BASE_URL: str = os.getenv("HKBU_BASIC_URL")  # type: ignore
-DEFAULT_API_VERSION: str = "2024-05-01-preview"
 
 # Model configurations
 DEEPSEEK_MODELS: List[Dict[str, str]] = [
-    {"model": "deepseek-r1", "api-version": DEFAULT_API_VERSION},
-    {"model": "deepseek-v3", "api-version": DEFAULT_API_VERSION},
+    {"model": "deepseek-r1", "api-version": "2024-05-01-preview"},
+    {"model": "deepseek-v3", "api-version": "2024-05-01-preview"},
 ]
 
 def get_model_info(model_name: str) -> Dict[str, str]:
@@ -67,8 +66,15 @@ def DeepSeek(
     message: str,
     model_name: str = "deepseek-r1",
     temperature: float = 0.0,
-    max_tokens: int = 100,
+    max_tokens: int = 255,
     stream: bool = False,
+    frequency_penalty: float = 0.0,
+    presence_penalty: float = 0.0,
+    top_p: float = 1.0,
+    response_format: Optional[Dict[str, str]] = None,
+    stop: Optional[List[str]] = None,
+    seed: Optional[int] = None,
+    tools: Optional[List[Dict[str, Any]]] = None,
     system_message: Optional[str] = None,
 ) -> Union[Dict[str, Any], str]:
     """
@@ -80,6 +86,13 @@ def DeepSeek(
         temperature (float): Sampling temperature (0-2.0).
         max_tokens (int): Maximum tokens in response.
         stream (bool): Whether to stream the response.
+        frequency_penalty (float): Penalty for frequent tokens.
+        presence_penalty (float): Penalty for token presence.
+        top_p (float): Nucleus sampling threshold.
+        response_format (Optional[Dict[str, str]]): Format of the response.
+        stop (Optional[List[str]]): Stop sequences.
+        seed (Optional[int]): Random seed for reproducibility.
+        tools (Optional[List[Dict[str, Any]]]): Optional list of tools.
         system_message (Optional[str]): Optional system message to set context.
         
     Returns:
@@ -98,12 +111,25 @@ def DeepSeek(
         headers = {"Content-Type": "application/json", "api-key": API_KEY}
 
         # Prepare payload
-        payload = {
+        payload: Dict[str, Any] = {
             "messages": conversation,
             "temperature": temperature,
             "max_tokens": max_tokens,
             "stream": stream,
+            "frequency_penalty": frequency_penalty,
+            "presence_penalty": presence_penalty,
+            "top_p": top_p,
         }
+
+        # Add optional parameters if provided
+        if response_format:
+            payload["response_format"] = response_format
+        if stop:
+            payload["stop"] = stop
+        if seed is not None:
+            payload["seed"] = seed
+        if tools:
+            payload["tools"] = tools
 
         # Make API request
         print(f"Sending request to {url} with payload: {payload}")
@@ -122,4 +148,3 @@ def DeepSeek(
     except Exception as ex:
         print(f"Unexpected error: {ex}")
         return f"Unexpected error: {ex}"
-
