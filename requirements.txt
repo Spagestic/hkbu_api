@@ -1,5 +1,5 @@
 requests
 dotenv
-
+openai
 langchain-core
 langchain-openai
